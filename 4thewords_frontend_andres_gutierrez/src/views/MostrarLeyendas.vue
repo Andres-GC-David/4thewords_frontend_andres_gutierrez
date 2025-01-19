@@ -123,9 +123,22 @@ export default {
                 console.log("Eliminando leyenda con ID:", id);
             }
         },
+        irALeyenda(leyendaId) {
+            const index = this.leyendas.findIndex((leyenda) => leyenda.id === Number(leyendaId));
+            if (index !== -1) {
+                this.paginaActual = index + 1; 
+            }
+        },
     },
     mounted() {
         this.obtenerLeyendas();
+
+        this.obtenerLeyendas().then(() => {
+            const leyendaId = this.$route.query.leyenda;
+            if (leyendaId) {
+                this.irALeyenda(leyendaId);
+            }
+        });
     },
 };
 </script>
