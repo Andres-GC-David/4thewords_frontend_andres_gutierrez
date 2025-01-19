@@ -47,7 +47,8 @@
                                     @click="editarLeyenda(leyendas[paginaActual - 1].id)">
                                     Editar
                                 </button>
-                                <button class="btn btn-danger" @click="eliminarLeyenda(leyendas[paginaActual - 1].id)">
+                                <button class="btn btn-danger"
+                                    @click="confirmarEliminar(leyendas[paginaActual - 1].id)">
                                     Eliminar
                                 </button>
                             </div>
@@ -62,6 +63,40 @@
                         @click="paginaSiguiente">
                         Siguiente
                     </button>
+                </div>
+            </div>
+        </div>
+        <div v-if="mostrarModalEliminar" class="modal d-block" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">Confirmación de Eliminacion</h5>
+                        <button type="button" class="btn-close" @click="cancelarEliminar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Estas seguro de que deseas eliminar esta leyenda?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="cancelarEliminar">Cancelar</button>
+                        <button type="button" class="btn btn-danger"
+                            @click="eliminarLeyendaConfirmada">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-if="mostrarModalExito" class="modal d-block" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">¡Éxito!</h5>
+                        <button type="button" class="btn-close" @click="cerrarModalExito"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>La leyenda se ha eliminado exitosamente.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" @click="cerrarModalExito">Cerrar</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -82,6 +117,9 @@ export default {
                 provincia: "",
                 categoria: "",
             },
+            mostrarModalEliminar: false,
+            leyendaAEliminar: null,
+            mostrarModalExito: false,
         };
     },
     methods: {
@@ -118,9 +156,50 @@ export default {
         editarLeyenda(id) {
             this.$router.push(`/editar/${id}`);
         },
-        eliminarLeyenda(id) {
-            if (confirm("¿Seguro que deseas eliminar esta leyenda?")) {
-                console.log("Eliminando leyenda con ID:", id);
+        confirmarEliminar(id) {
+            this.leyendaAEliminar = id;
+            this.mostrarModalEliminar = true;
+        },
+
+        cancelarEliminar() {
+            this.mostrarModalEliminar = false;
+            this.leyendaAEliminar = null;
+        },
+
+        async eliminarLeyendaConfirmada() {
+            try {
+                const response = await fetch(`http://127.0.0.1:8080/leyendas/${this.leyendaAEliminar}`, {
+                    method: "DELETE",
+                });
+
+                if (!response.ok) throw new Error("Error al eliminar la leyenda");
+
+                // Filtrar las leyendas para eliminar la leyenda eliminada
+                this.leyendas = this.leyendas.filter((leyenda) => leyenda.id !== this.leyendaAEliminar);
+
+                // Ajustar la página actual si es necesario
+                if (this.paginaActual > this.leyendas.length) {
+                    this.paginaActual = this.leyendas.length; // Ajustar a la última página válida
+                }
+
+                // Si la página actual queda vacía, volver a la portada
+                if (this.leyendas.length === 0) {
+                    this.paginaActual = 0;
+                }
+
+                // Mostrar el modal de éxito
+                this.mostrarModalEliminar = false;
+                this.mostrarModalExito = true;
+
+                // Resetear la leyenda seleccionada
+                this.leyendaAEliminar = null;
+            } catch (error) {
+                console.error("Error al eliminar la leyenda:", error);
+
+                // Mostrar el modal de error
+                this.mensajeError = "No se pudo eliminar la leyenda.";
+                this.mostrarModalEliminar = false;
+                this.mostrarModalError = true;
             }
         },
         irALeyenda(leyendaId) {
@@ -128,6 +207,9 @@ export default {
             if (index !== -1) {
                 this.paginaActual = index + 1; 
             }
+        },
+        cerrarModalExito() {
+            this.mostrarModalExito = false;
         },
     },
     mounted() {
