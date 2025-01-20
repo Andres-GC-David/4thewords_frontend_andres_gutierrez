@@ -1,6 +1,7 @@
 <template>
-    <div class="mostrar-leyendas-container">
-        <div class="filtro-lateral" ref="filterMenu">
+    <div class="mostrar-leyendas-wrapper">
+        <button ref="filterButton" class="btn btn-secondary toggle-filter-button" @click="toggleFiltro">Filtrar</button>
+        <div v-if="mostrarFiltro" class="filtro-lateral" ref="filterMenu">
             <div class="card shadow h-100">
                 <div class="card-header bg-primary text-white">
                     <h5 class="card-title">Filtros</h5>
@@ -45,36 +46,8 @@
                 </div>
             </div>
         </div>
+
         <div class="container-fluid">
-            <div class="row mt-3">
-                <div class="col-12 d-flex justify-content-between align-items-center">
-                    <button class="btn btn-secondary" @click="toggleFiltro">Filtrar</button>
-                </div>
-            </div>
-
-            <div v-if="mostrarFiltro" class="row mt-3">
-                <div class="col-md-4 offset-md-4">
-                    <div class="card shadow">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="card-title">Filtrar Leyendas</h5>
-                        </div>
-                        <div class="card-body">
-                            <input type="text" v-model="filtros.nombre" placeholder="Nombre"
-                                class="form-control my-2" />
-                            <input type="text" v-model="filtros.provincia" placeholder="Provincia"
-                                class="form-control my-2" />
-                            <input type="text" v-model="filtros.canton" placeholder="Cantón"
-                                class="form-control my-2" />
-                            <input type="text" v-model="filtros.distrito" placeholder="Distrito"
-                                class="form-control my-2" />
-                            <input type="text" v-model="filtros.categoria" placeholder="Categoría"
-                                class="form-control my-2" />
-                            <button class="btn btn-primary w-100" @click="filtrarLeyendas">Filtrar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="row mt-4 justify-content-center">
                 <div class="col-md-8">
                     <div class="book-container">
@@ -113,53 +86,53 @@
                     </div>
                 </div>
             </div>
-            <div v-if="mostrarModalEliminar" class="modal d-block" tabindex="-1">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header bg-danger text-white">
-                            <h5 class="modal-title">Confirmación de Eliminacion</h5>
-                            <button type="button" class="btn-close" @click="cancelarEliminar"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p>¿Estas seguro de que deseas eliminar esta leyenda?</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cancelarEliminar">Cancelar</button>
-                            <button type="button" class="btn btn-danger"
-                                @click="eliminarLeyendaConfirmada">Eliminar</button>
-                        </div>
+        </div>
+        <div v-if="mostrarModalEliminar" class="modal d-block" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">Confirmación de Eliminación</h5>
+                        <button type="button" class="btn-close" @click="cancelarEliminar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Estás seguro de que deseas eliminar esta leyenda?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="cancelarEliminar">Cancelar</button>
+                        <button type="button" class="btn btn-danger"
+                            @click="eliminarLeyendaConfirmada">Eliminar</button>
                     </div>
                 </div>
             </div>
-            <div v-if="mostrarModalExito" class="modal d-block" tabindex="-1">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header bg-success text-white">
-                            <h5 class="modal-title">¡Éxito!</h5>
-                            <button type="button" class="btn-close" @click="cerrarModalExito"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p>La leyenda se ha eliminado exitosamente.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" @click="cerrarModalExito">Cerrar</button>
-                        </div>
+        </div>
+        <div v-if="mostrarModalExito" class="modal d-block" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">¡Éxito!</h5>
+                        <button type="button" class="btn-close" @click="cerrarModalExito"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>La leyenda se ha eliminado exitosamente.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" @click="cerrarModalExito">Cerrar</button>
                     </div>
                 </div>
             </div>
-            <div v-if="mostrarModalError" class="modal d-block" tabindex="-1">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header bg-danger text-white">
-                            <h5 class="modal-title">Error</h5>
-                            <button type="button" class="btn-close" @click="cerrarModalError"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p>No se encontraron leyendas que coincidan con los parámetros de búsqueda.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" @click="cerrarModalError">Cerrar</button>
-                        </div>
+        </div>
+        <div v-if="mostrarModalError" class="modal d-block" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">Error</h5>
+                        <button type="button" class="btn-close" @click="cerrarModalError"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>No se encontraron leyendas que coincidan con los parámetros de búsqueda.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" @click="cerrarModalError">Cerrar</button>
                     </div>
                 </div>
             </div>
@@ -343,16 +316,27 @@ export default {
         cerrarModalError() {
             this.mostrarModalError = false;
         },
+        cerrarFiltroSiEsExterno(event) {
+            const menu = this.$refs.filterMenu;
+            const button = this.$refs.filterButton;
+            if (menu && !menu.contains(event.target) && button && !button.contains(event.target)) {
+                this.mostrarFiltro = false;
+            }
+        },
     },
     mounted() {
         this.obtenerLeyendas();
         this.obtenerOpcionesFiltros();
+        document.addEventListener("click", this.cerrarFiltroSiEsExterno);
         this.obtenerLeyendas().then(() => {
             const leyendaId = this.$route.query.leyenda;
             if (leyendaId) {
                 this.irALeyenda(leyendaId);
             }
         });
+    },
+    beforeUnmount() {
+        document.removeEventListener("click", this.cerrarFiltroSiEsExterno);
     },
 };
 </script>
@@ -361,6 +345,7 @@ export default {
 <style scoped>
 .mostrar-leyendas-container {
     display: flex;
+    flex-direction: row;
 }
 
 .filtro-lateral {
@@ -370,11 +355,17 @@ export default {
     padding: 20px;
     overflow-y: auto;
     height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
 }
 
 .contenido-libro {
     flex-grow: 1;
     padding: 20px;
+    margin-left: 300px;
+    transition: margin-left 0.3s ease-in-out;
 }
 
 .book-container {
@@ -383,15 +374,14 @@ export default {
     align-items: center;
     position: relative;
     width: 100%;
-
     height: 500px;
     margin: 0 auto;
     border: 3px solid #333;
     border-radius: 10px;
     background: #fdf7e3;
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
     padding: 20px;
+    overflow: hidden;
 }
 
 .book-page {
@@ -431,11 +421,55 @@ export default {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.toggle-filter-button {
+    top: 20px;
+    left: 20px;
+    z-index: 1200;
+}
 
-@media (max-width: 768px) {
+@media (max-width: 1350px) {
+    .filtro-lateral {
+        width: 80%;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        height: auto;
+        margin-bottom: 20px;
+    }
+
+    .contenido-libro {
+        margin-left: 0;
+    }
+
+}
+
+.contenido-libro {
+    flex-grow: 1;
+    padding: 20px;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+.book-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 500px;
+    margin: 0 auto;
+    border: 3px solid #333;
+    border-radius: 10px;
+    background: #fdf7e3;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    overflow: hidden;
+}
+
+@media (max-width: 1024px) {
     .book-container {
-        height: 400px;
-        width: 100%;
+        height: 500px;
     }
 
     .navigation button {
@@ -443,9 +477,15 @@ export default {
     }
 }
 
+@media (max-width: 768px) {
+    .book-container {
+        height: 500px;
+    }
+}
+
 @media (max-width: 576px) {
     .book-container {
-        height: 350px;
+        height: 500px;
     }
 
     .navigation button {
@@ -453,4 +493,20 @@ export default {
         padding: 8px;
     }
 }
+
+.navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.legend-page img {
+    max-width: 100%;
+    max-height: 50%;
+    object-fit: contain;
+    margin: 0 auto;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 </style>
+
