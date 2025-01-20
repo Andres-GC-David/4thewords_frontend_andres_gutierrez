@@ -1,5 +1,12 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import { ref } from 'vue'
+
+const isNavbarCollapsed = ref(true);
+
+function toggleNavbar() {
+  isNavbarCollapsed.value = !isNavbarCollapsed.value;
+}
 </script>
 
 <template>
@@ -8,11 +15,10 @@ import { RouterLink, RouterView } from 'vue-router'
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
           <RouterLink to="/" class="navbar-brand">Leyendas Ticas</RouterLink>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <button class="navbar-toggler" type="button" @click="toggleNavbar" :class="{ collapsed: isNavbarCollapsed }" aria-controls="navbarNav" aria-expanded="!isNavbarCollapsed" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
+          <div class="collapse navbar-collapse" :class="{ show: !isNavbarCollapsed }" id="navbarNav">
             <ul class="navbar-nav ms-auto">
               <li class="nav-item">
                 <RouterLink to="/" class="nav-link">Home</RouterLink>
