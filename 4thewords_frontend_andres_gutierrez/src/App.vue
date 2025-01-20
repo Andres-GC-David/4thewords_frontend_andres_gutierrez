@@ -20,9 +20,6 @@ import { RouterLink, RouterView } from 'vue-router'
               <li class="nav-item">
                 <RouterLink to="/crear" class="nav-link">Agregar Leyenda</RouterLink>
               </li>
-              <li class="nav-item">
-                <RouterLink to="/about" class="nav-link">Acerca</RouterLink>
-              </li>
             </ul>
           </div>
         </div>
