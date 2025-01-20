@@ -56,21 +56,39 @@
                                 <h2>Bienvenido al Épico Mundo de Leyendas Ticas</h2>
                                 <p>Aprendamos un poco de nuestro folklore</p>
                             </div>
-                            <div v-else class="legend-page">
-                                <h4>{{ leyendas[paginaActual - 1].nombre }}</h4>
-                                <p>{{ leyendas[paginaActual - 1].descripcion }}</p>
-                                <img :src="'http://127.0.0.1:8080' + leyendas[paginaActual - 1].imagen" alt="Leyenda"
-                                    class="img-fluid my-3" />
-                                <small class="text-muted">{{ leyendas[paginaActual - 1].fecha_de_leyenda }}</small>
-                                <div class="d-flex justify-content-end mt-3">
-                                    <button class="btn btn-warning me-2"
-                                        @click="editarLeyenda(leyendas[paginaActual - 1].id)">
-                                        Editar
-                                    </button>
-                                    <button class="btn btn-danger"
-                                        @click="confirmarEliminar(leyendas[paginaActual - 1].id)">
-                                        Eliminar
-                                    </button>
+                            <div v-else class="legend-page book-open">
+                                <div class="left-page">
+                                    <img :src="'http://127.0.0.1:8080' + leyendas[paginaActual - 1].imagen"
+                                        alt="Leyenda" class="img-fluid legend-image" />
+                                </div>
+                                <div class="right-page">
+                                    <div class="legend-detail">
+                                        <h4 class="legend-title">{{ leyendas[paginaActual - 1].nombre }}</h4>
+                                    </div>
+                                    <div class="legend-detail">
+                                        <p><strong>Ubicación:</strong> {{ leyendas[paginaActual - 1].provincia }}, {{
+                                            leyendas[paginaActual - 1].canton }}, {{ leyendas[paginaActual - 1].distrito
+                                            }}</p>
+                                    </div>
+                                    <div class="legend-detail">
+                                        <p><strong>Categoría:</strong> {{ leyendas[paginaActual - 1].categoria }}</p>
+                                    </div>
+                                    <div class="legend-detail">
+                                        <p>{{ leyendas[paginaActual - 1].descripcion }}</p>
+                                    </div>
+                                    <div class="legend-detail">
+                                        <p class="text-muted">{{ leyendas[paginaActual - 1].fecha_de_leyenda }}</p>
+                                    </div>
+                                    <div class="legend-buttons">
+                                        <button class="btn btn-warning me-2"
+                                            @click="editarLeyenda(leyendas[paginaActual - 1].id)">
+                                            Editar
+                                        </button>
+                                        <button class="btn btn-danger"
+                                            @click="confirmarEliminar(leyendas[paginaActual - 1].id)">
+                                            Eliminar
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -401,24 +419,71 @@ export default {
 
 .legend-page {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: space-between;
     height: 100%;
+}
+
+.book-open {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    min-width: 45%;
+    height: 100%;
+    width: 100%;
+    padding: 20px;
+}
+
+.left-page {
+    flex: 1;
+    padding: 20px;
+    border-right: 2px solid #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90%;
+}
+
+.legend-image {
+    max-width: 100%;
+    max-height: 90%;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.right-page {
+    flex: 1;
+    min-width: 45%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.legend-detail {
+    margin-bottom: 15px;
+}
+
+.legend-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.legend-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: auto;
 }
 
 .navigation {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
-}
-
-.legend-page img {
-    max-width: 100%;
-    max-height: 50%;
-    object-fit: contain;
-    margin: 0 auto;
-    border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .toggle-filter-button {
@@ -428,85 +493,120 @@ export default {
 }
 
 @media (max-width: 1350px) {
+    .book-container {
+        height: 550px;
+    }
+
+    .book-open {
+        gap: 5px;
+    }
+
+    .left-page,
+    .right-page {
+        flex: 1;
+    }
+
     .filtro-lateral {
-        width: 80%;
         position: relative;
-        left: 50%;
-        transform: translateX(-50%);
-        border: 1px solid #ddd;
-        border-bottom: 1px solid #ddd;
+        width: 70%;
         height: auto;
-        margin-bottom: 20px;
+        margin: 0 auto 20px auto;
+        border: 1px solid #ddd;
+        border-bottom: 2px solid #ddd;
+        border-right: none;
+        overflow: visible;
+        z-index: 1000;
+    }
+
+    .filtro-lateral .form-check {
+        flex: 1 1 45%;
+        margin-bottom: 10px;
+    }
+
+    .mostrar-leyendas-container {
+        flex-direction: column;
     }
 
     .contenido-libro {
         margin-left: 0;
+        margin-top: 20px;
     }
 
-}
-
-.contenido-libro {
-    flex-grow: 1;
-    padding: 20px;
-    transition: margin-left 0.3s ease-in-out;
-}
-
-.book-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    width: 100%;
-    height: 500px;
-    margin: 0 auto;
-    border: 3px solid #333;
-    border-radius: 10px;
-    background: #fdf7e3;
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
-    padding: 20px;
-    overflow: hidden;
 }
 
 @media (max-width: 1024px) {
     .book-container {
-        height: 500px;
+        width: 95%;
+        height: 550px;
     }
 
-    .navigation button {
-        font-size: 14px;
+    .left-page,
+    .right-page {
+        flex: 1;
+    }
+
+    .legend-title {
+        font-size: 1.5rem;
+    }
+
+    .filtro-lateral {
+        width: 80%;
+    }
+
+    .filtro-lateral .form-check {
+        flex: 1 1 100%;
     }
 }
 
 @media (max-width: 768px) {
     .book-container {
+        width: 100%;
         height: 500px;
+    }
+
+    .left-page,
+    .right-page {
+        flex: 1;
+    }
+
+    .legend-title {
+        font-size: 1.3rem;
+    }
+
+    .filtro-lateral {
+        width: 90%;
+        padding: 15px;
+    }
+
+    .filtro-lateral .form-check {
+        flex: 1 1 100%;
     }
 }
 
 @media (max-width: 576px) {
     .book-container {
+        width: 110%;
         height: 500px;
     }
 
-    .navigation button {
-        font-size: 12px;
-        padding: 8px;
+    .legend-title {
+        font-size: 1.2rem;
+    }
+
+    .legend-image {
+        max-height: 80%;
+    }
+
+    .legend-buttons {
+        gap: 5px;
+    }
+
+    .filtro-lateral {
+        width: 95%;
+    }
+
+    .filtro-lateral .form-check {
+        flex: 1 1 100%;
     }
 }
-
-.navigation {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
-
-.legend-page img {
-    max-width: 100%;
-    max-height: 50%;
-    object-fit: contain;
-    margin: 0 auto;
-    border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
 </style>
-
